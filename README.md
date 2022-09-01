@@ -19,9 +19,8 @@ Depending on the image you use, the palette might look a bit busy. I just wanted
 
 ### Why a spreadsheet?
 
-I wanted the final pattern to be easily modifiable without having to own fancy photo editing software. 
-A spreadsheet makes it easy to just pop in and change out a few cells
+I wanted the final pattern to be easily modifiable and a spreadsheet makes it easy to just pop in and change out a few cells
 
 ### Why did you do this?
 
-I like cross-stitch, but I don't like having to dig around for cool patterns or spend time making my own pattern, so this automates the busy work. 
+I like cross-stitch, but I don't like having to dig around for cool patterns or spend time making my own patterns, so this automates some of the busy work. 
