@@ -17,6 +17,8 @@ Turn an image into a cross stitch pattern using python
 
 Depending on the image you use, the palette might look a bit busy. I just wanted it present in case you need to edit the final sheet :). 
 
+## Q&A
+
 ### Why a spreadsheet?
 
 I wanted the final pattern to be easily modifiable and a spreadsheet makes it easy to just pop in and change out a few cells
