@@ -3,9 +3,9 @@ Turn an image into a cross stitch pattern using python
 
 ## Dependencies
 
-* Pillow
-* webcolors
-* openpyxl
+* [Pillow](https://pypi.org/project/Pillow/)
+* [webcolors](https://pypi.org/project/webcolors/)
+* [openpyxl](https://pypi.org/project/openpyxl/)
 
 ## How to use this thing
 
@@ -24,3 +24,7 @@ I wanted the final pattern to be easily modifiable and a spreadsheet makes it ea
 ### Why did you do this?
 
 I like cross-stitch, but I don't like having to dig around for cool patterns or spend time making my own patterns, so this automates some of the busy work. 
+
+### This thing is a mess!
+
+You're correct, I will be cleaning it up as I go (and probably adding more features and perhaps a GUI).
