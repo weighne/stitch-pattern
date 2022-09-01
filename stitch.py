@@ -1,4 +1,3 @@
-from resizeimage import resizeimage
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import PatternFill
 from openpyxl.styles.borders import Border, Side
