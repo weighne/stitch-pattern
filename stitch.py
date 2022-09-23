@@ -6,8 +6,8 @@ from PIL import Image,ImageDraw,ImageFont
 import webcolors
 import os
 import openpyxl
+import tkinter as tk
 
-#image_path = "crystal.png"  #need 32-bit depth to get proper rgba values
 
 long_colors = []
 colors = []
@@ -20,61 +20,57 @@ def img_to_grid(img, dim_x, dim_y):
         pixels = image.load()
         row_w = int(w / dim_x)  # define dimensions of "stitch" based on image dimensions
         row_h = int(h / dim_y)
-        n = 0
+
         for x in range(dim_x):
             row = []
             for y in range(dim_y):
                 box = (y * row_w, x * row_h, y * row_w + row_w, x * row_h + row_h)  # define box (range of pixels) to crop out of original image
                 output = image.crop(box)  # crop
                 row.append(get_avg_color(output))
-                
-                if get_avg_color(output) not in palette:
+
+                if get_avg_color(output) not in palette:  # append unique colors to array for color palette
                     palette.append(get_avg_color(output))
                 else:
                     continue
-                # print(palette)
-                # name, ext = os.path.splitext(img)
-                # output_path = f"output\\{name}_{str(n)}{ext}"
-                # output.save(output_path)  # save to new directory for later
-                n+=1
-            
+
             grid.append(row)
-            
+
     return grid, palette
 
 
-def grid_to_sheet(grid, long_colors):
-    sheet = "test.xlsx"
+def grid_to_sheet(img_path, grid, long_colors):
+    sheet = f'{img_path.split("/")[-1].split(".")[0]}.xlsx'  # spreadsheet to save pattern to
     wb = Workbook()
     ws = wb.active
     border = Border(left=Side(style='thin'),right=Side(style='thin'),top=Side(style='thin'),bottom=Side(style='thin'))
-    
+
     for x in range(len(grid)):
         for y in range(len(grid[x])):
-            ws.column_dimensions[f'{get_column_letter(y+1)}'].width = 3
+            ws.column_dimensions[f'{get_column_letter(y+1)}'].width = 2.6  # set column width to more closely match height
             cell = ws[f'{get_column_letter(y+1)}{x+1}']
-            cell.fill = PatternFill("solid", fgColor=f'{grid[x][y].strip("#")}')
+            cell.fill = PatternFill("solid", fgColor=f'{grid[x][y].strip("#")}')  # fill cell with color from image
             cell.border = border
-    
+
     wb.save(sheet)
-    
+
     colors = list(set(long_colors))
     font = ImageFont.load_default().font
-    palette = Image.new(mode="RGB", size=(1000,120))
+    palette = Image.new(mode="RGB", size=(1000,120))  # create blank image for color palette
 
     for i in range(len(colors)):
         newt = Image.new(mode="RGB", size=(1000//len(colors),100), color=colors[i])
         draw = ImageDraw.Draw(newt)
-        draw.text((5,5), str(colors[i]), fill="white", font=font)
-        palette.paste(newt, (i*1000//len(colors),10))
+        draw.text((5,5), str(colors[i]), fill="white", font=font)  # write text for hex code
+        palette.paste(newt, (i*1000//len(colors),10))  # paste color onto image
 
     palette.save("palette.png")
-    
+
 
 def get_avg_color(img):  # scan the image and return the most common color in hex
     long_colors = []
     w, h = img.size
     pixels = img.load()
+
     for y in range(h):
         for x in range(w):
             try:
@@ -86,10 +82,11 @@ def get_avg_color(img):  # scan the image and return the most common color in he
                     long_colors.append(webcolors.rgb_to_hex((r, g, b)))
             except TypeError:
                 print(pixels[x,y])
-    
+
     most_common = max(set(long_colors), key = long_colors.count)
-    return most_common
     
+    return most_common
+
 
 def get_palette(img):
     with Image.open(img) as image:
@@ -116,12 +113,28 @@ def get_palette(img):
 
     palette.save("palette.png")
 
+
+def submit():
+    img_path = p_input.get().strip()
+    dim_x, dim_y = dim_input.get().strip().split("x")
+    grid, palette = img_to_grid(img_path, int(dim_x), int(dim_y))
+    grid_to_sheet(img_path, grid, palette)
+
+
 if __name__ == "__main__":
-    img_path = input("Enter path to image file: ")
-    dimension_x, dimension_y = input("Enter stitch dimensions (ex: 20x20)\nInput: ").split("x")
-    print("Working...")
-    grid, palette = img_to_grid(img_path, int(dimension_x), int(dimension_y))
-    grid_to_sheet(grid, palette)
-    print("DONE!")
-    
-    
+    root = tk.Tk()
+    root.title("Stitch")
+
+    p_label = tk.Label(root, text="Path to image: ").grid(row=0,column=0)
+    p_input = tk.Entry(root)
+    p_input.grid(row=0,column=1)
+
+    dim_label = tk.Label(root, text="Stitch Dimensions: ").grid(row=1,column=0)
+    dim_input = tk.Entry(root)
+    dim_input.grid(row=1,column=1)
+    dim_label2 = tk.Label(root, text="(ex: 20x20)").grid(row=2,column=1)
+
+    submit_button = tk.Button(root, text="Submit", command=submit).grid(row=3,column=1)
+
+    root.update_idletasks()
+    root.mainloop()
