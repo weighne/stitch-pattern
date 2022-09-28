@@ -7,6 +7,7 @@ import webcolors
 import os
 import openpyxl
 import tkinter as tk
+import json
 
 
 long_colors = []
@@ -84,7 +85,7 @@ def get_avg_color(img):  # scan the image and return the most common color in he
                 print(pixels[x,y])
 
     most_common = max(set(long_colors), key = long_colors.count)
-    
+
     return most_common
 
 
@@ -112,6 +113,15 @@ def get_palette(img):
         palette.paste(newt, (i*1000//len(colors),10))
 
     palette.save("palette.png")
+
+
+def nearest_color(rgb):
+    if rgb in colors:
+        return colors[x]
+    elif rgb not in colors:
+        for x in colors:
+            if colors[x] - rgb <= 10:
+                return colors[x]
 
 
 def submit():
